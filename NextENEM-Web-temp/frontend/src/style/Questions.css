@@ -471,6 +471,36 @@
 
 }
 
+/* NOVAS CLASSES PARA O COORDENAR OS ELEFANTES NO RESULTADO */
+  .result-feedback-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px;
+    animation: slideUp 0.4s ease;
+  }
+
+  .result-elephant-img {
+    width: 130px;
+    height: 130px;
+    object-fit: contain;
+    margin-bottom: 12px;
+  }
+
+  .elephant-message {
+    font-size: 15px;
+    font-weight: 600;
+    margin: 0;
+  }
+
+  .elephant-message.success {
+    color: #4ade80; /* Verde para parabéns */
+  }
+
+  .elephant-message.alert {
+    color: #f87171; /* Vermelho/Laranja suave para incentivar */
+  }
+
 @keyframes slideUp {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }

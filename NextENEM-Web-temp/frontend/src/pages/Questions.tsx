@@ -1,12 +1,14 @@
 import { useEffect, useState } from 'react'
-import { useNavigate, useLocation } from 'react-router-dom' // Importado useLocation
+import { useNavigate, useLocation } from 'react-router-dom'
 import api from '../services/api'
 import '../style/Questions.css'
 import '../style/Shared.css'
 import ReactMarkdown from 'react-markdown'
 
-// IMPORTAÇÃO DA IMAGEM DO ELEFANTE
+// IMPORTAÇÃO DOS ELEFANTES
 import elefanteIdeia from '../assets/elefante_ideia2-removebg-preview.png'
+import elefanteFeliz from '../assets/Elefante feliz.png'
+import elefanteTriste from '../assets/elefante decepcionado.png'
 
 interface Alternative {
   letter: string
@@ -29,16 +31,15 @@ interface SavedSession {
   answers: (string | null)[]
   currentIndex: number
   finished: boolean
-  discipline: string // Adicionado disciplina na interface
+  discipline: string
 }
 
 const TOTAL = 10
 
 export default function Questions() {
   const navigate = useNavigate()
-  const location = useLocation() // Para pegar a disciplina do Contents.tsx
+  const location = useLocation()
 
-  // Pega a disciplina vinda do navigate('/questions', { state: { discipline: '...' } })
   const disciplineFromState = location.state?.discipline || ''
 
   const [questions, setQuestions] = useState<Question[]>([])
@@ -55,8 +56,6 @@ export default function Questions() {
     if (saved) {
       const session: SavedSession = JSON.parse(saved)
       
-      // LOGICA CRITICAL: Só restaura se a disciplina for a MESMA.
-      // Se eu estava no aleatório e cliquei em "Matemática", ele ignora o cache e carrega novo.
       if (session.discipline === disciplineFromState) {
         setQuestions(session.questions)
         setAnswers(session.answers)
@@ -68,13 +67,12 @@ export default function Questions() {
           setAnswered(true)
         }
         setLoading(false)
-        return // Para aqui, não executa o fetchAllQuestions
+        return
       }
     }
     
-    // Se não tem cache ou a disciplina é diferente, busca novas
     fetchAllQuestions(disciplineFromState)
-  }, [disciplineFromState]) // Recarrega se a disciplina mudar
+  }, [disciplineFromState])
 
   useEffect(() => {
     if (questions.length === TOTAL) {
@@ -83,7 +81,7 @@ export default function Questions() {
         answers, 
         currentIndex, 
         finished,
-        discipline: disciplineFromState // Salva qual disciplina é essa sessão
+        discipline: disciplineFromState
       }
       localStorage.setItem('questionsSession', JSON.stringify(session))
     }
@@ -94,7 +92,6 @@ export default function Questions() {
     const fetched: Question[] = [];
     
     try {
-      // Busca 10 questões (ou faça um loop de 10 chamadas)
       for (let i = 0; i < TOTAL; i++) {
         const res = await api.get('/questions/random', {
           params: disc ? { discipline: disc } : {}
@@ -104,7 +101,6 @@ export default function Questions() {
       setQuestions(fetched);
     } catch (err) {
       console.error("Erro ao carregar simulado:", err);
-      // Se falhar, você pode decidir se limpa o loading ou mostra erro
     } finally {
       setLoading(false);
     }
@@ -117,8 +113,6 @@ export default function Questions() {
     const newAnswers = [...answers]
     newAnswers[currentIndex] = letter
     setAnswers(newAnswers)
-
-    // Opcional: Enviar resposta para o banco de dados aqui se desejar
   }
 
   function nextQuestion() {
@@ -165,11 +159,24 @@ export default function Questions() {
     return 'letter-circle'
   }
 
+  // TELA DE RESULTADOS COM O ELEFANTE DINÂMICO
   if (finished) {
     return (
       <div className="result-page">
         <div className="result-card">
-          <div className="trophy">{score >= 70 ? '🏆' : score >= 40 ? '📚' : '💪'}</div>
+          {/* Lógica Condicional do Elefante com base na nota (< 60 ou >= 60) */}
+          {score >= 60 ? (
+            <div className="result-feedback-wrapper">
+              <img src={elefanteFeliz} alt="Elefante Feliz" className="result-elephant-img" />
+              <p className="elephant-message success">Parabéns! Você mandou super bem!</p>
+            </div>
+          ) : (
+            <div className="result-feedback-wrapper">
+              <img src={elefanteTriste} alt="Elefante Decepcionado" className="result-elephant-img" />
+              <p className="elephant-message alert">Não desanime! Pratique um pouco mais.</p>
+            </div>
+          )}
+
           <h1>{disciplineFromState ? `Fim de Estudo` : 'Simulado Finalizado'}</h1>
           <div className="score-box">
             <p className="label">Pontuação</p>
@@ -262,7 +269,6 @@ export default function Questions() {
             )}
 
             <div className="bottom-buttons">
-              {/* ALTERAÇÃO EXCLUSIVA AQUI: Estrutura interna modificada */}
               <button className="btn-hint" onClick={() => alert("Dica: Foque no comando da questão.")}>
                 <img src={elefanteIdeia} alt="Elefante Ideia" className="hint-icon" />
                 <span>Dica do elefante</span>
