@@ -1,12 +1,17 @@
 import { useNavigate } from 'react-router-dom'
 import { useEffect, useState, useRef } from 'react'
 import '../style/Home.css'
-import { getCursoLabel } from './Universities'
+import NE from '../assets/NE.png'
+
+// Importação dos novos ícones da pasta assets
+import checklistIcon from '../assets/checklist.png'
+import dashboardIcon from '../assets/dashboard.png'
+import educationIcon from '../assets/education.png'
+import graduationHatIcon from '../assets/graduation-hat.png'
 
 export default function Home() {
   const navigate = useNavigate()
   const name = localStorage.getItem('name') || 'Estudante'
-  const studyArea = localStorage.getItem('studyArea') || ''   
   const initials = name.slice(0, 2).toUpperCase()
   const [quote, setQuote] = useState<{ text: string; author: string } | null>(null)
   const [menuOpen, setMenuOpen] = useState(false)
@@ -57,11 +62,7 @@ export default function Home() {
           {menuOpen && (
             <div className="home-dropdown">
               <div className="home-dropdown-header">
-                <div className="home-dropdown-name">
-                  <span>{name}</span>
-                  <span>{getCursoLabel(studyArea)}</span>
-                   
-                </div>
+                <p className="home-dropdown-name">{name}</p>
               </div>
               <button className="home-dropdown-item" onClick={() => { setMenuOpen(false); navigate('/area-select') }}>
                 🎯 Mudar área de estudo

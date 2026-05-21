@@ -62,7 +62,6 @@ CREATE TABLE users (
     is_active BOOLEAN DEFAULT TRUE,
     is_verified BOOLEAN DEFAULT FALSE,
     verification_token VARCHAR(255) UNIQUE
-    study_area VARCHAR(100)
 );
 
 CREATE TABLE universities (
@@ -82,6 +81,8 @@ CREATE TABLE university_courses (
 
 DESCRIBE users;
 SELECT * FROM users;
+
+ALTER TABLE users ADD COLUMN study_area VARCHAR(100) DEFAULT NULL;
 
 INSERT INTO universities (nome, estado, cidade, endereco) VALUES
 ('Universidade Federal do Ceará (UFC)', 'CE', 'Fortaleza', 'Av. da Universidade, 2853, Fortaleza - CE'),

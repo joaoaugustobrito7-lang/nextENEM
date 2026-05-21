@@ -232,16 +232,10 @@
   }
 
   .home-dropdown-name {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  color: #f9fafb;
-  font-weight: 700;
-  font-size: 14px;
-  }
-  .home-dropdown-name span:last-child {
-  color: #60a5fa;
-  font-weight: 600;
+    color: #f9fafb;
+    font-weight: 700;
+    font-size: 14px;
+    margin: 0;
   }
 
   .home-dropdown-item {
