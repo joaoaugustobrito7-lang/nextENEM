@@ -128,8 +128,14 @@ export default function Questions() {
     }
   }
 
+  // CORREÇÃO: Reseta os estados locais e busca novas questões
   function restartQuiz() {
     localStorage.removeItem('questionsSession')
+    setCurrentIndex(0)
+    setSelected(null)
+    setAnswered(false)
+    setFinished(false)
+    setAnswers(Array(TOTAL).fill(null))
     fetchAllQuestions(disciplineFromState)
   }
 
@@ -159,12 +165,11 @@ export default function Questions() {
     return 'letter-circle'
   }
 
-  // TELA DE RESULTADOS COM O ELEFANTE DINÂMICO
+  // TELA DE RESULTADOS
   if (finished) {
     return (
       <div className="result-page">
         <div className="result-card">
-          {/* Lógica Condicional do Elefante com base na nota (< 60 ou >= 60) */}
           {score >= 60 ? (
             <div className="result-feedback-wrapper">
               <img src={elefanteFeliz} alt="Elefante Feliz" className="result-elephant-img" />
@@ -196,7 +201,15 @@ export default function Questions() {
           </div>
           <div className="result-buttons">
             <button className="btn-restart" onClick={restartQuiz}>🔄 Novo Quiz</button>
-            <button className="btn-home" onClick={() => navigate('/home')}>🏠 Início</button>
+            <button 
+              className="btn-home" 
+              onClick={() => {
+                localStorage.removeItem('questionsSession') // CORREÇÃO: Evita travar no resultado ao voltar da Home
+                navigate('/home')
+              }}
+            >
+              🏠 Início
+            </button>
           </div>
         </div>
       </div>
